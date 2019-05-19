@@ -1,14 +1,83 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{balance}
+\usepackage{arydshln}
+\usepackage{soul}
+\usepackage[table]{xcolor}
+\usepackage{makecell}
+\usepackage{cite}
+\usepackage{bold-extra}
+\usepackage{multirow,tabu}
 
-\title{TSE:raise refactoring ai for se}
-\author{tim menzies}
-\date{May 2019}
 
 \begin{document}
+\title{Refactoring Artificial Intelligence for Software Engineering}
 
+\author{Rahul Krishna,~\IEEEmembership{Member,~IEEE,}
+Jianfeng Chen,
+and~Tim Menzies,~\IEEEmembership{Fellow,~IEEE}
+\IEEEcompsocitemizethanks{
+\IEEEcompsocthanksitem R. Krishna, J. Chen were with Department of Computer Science, North Carolina State University
+\IEEEcompsocthanksitem T. Menzies is with Department of Computer Science, North Carolina State University
+\IEEEcompsocthanksitem Email: i.m.ralk@gmail.com, jchen37@ncsu.edu, timm@ieee.org}
+\thanks{Manuscript received XX,XX, 2019; revised XX, XX, 2019.}}
+
+\markboth{IEEE Transactions on Software Engineering, VOL. x, No. y, XX, 2019}
+{IEEE Transactions on Software Engineering, VOL. x, No. y, XX, 2019}
+
+\IEEEtitleabstractindextext{%
+\begin{abstract}
+The abstract goes here.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Computer Society, IEEE, IEEEtran, journal, \LaTeX, paper, template.
+\end{IEEEkeywords}}
 \maketitle
 
-\section{Introduction}
+\IEEEdisplaynontitleabstractindextext
+\IEEEpeerreviewmaketitle
 
+
+
+\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
+\IEEEPARstart{S}ee next page...
+~\cite{nair2018data}
+
+\section{RAISE Framework}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\begin{table*}[!bt]
+\caption{RAISE framework at a galance.}
+\label{tab:framework}
+\begin{tabular}{L{0.3\textwidth}|L{0.13\textwidth}|L{0.15\textwidth}|L{0.15\textwidth}|L{0.15\textwidth}}
+\Xhline{3\arrayrulewidth}
+\rowcolor{black!7} & {\bf\normalsize SWAY~\cite{chen2018sampling,chen2018beyond}} & {\bf\normalsize RIOT~\cite{chen2018riot}} & {\bf\normalsize SNAP} & {\bf\normalsize FLASH~\cite{nair2018finding}} \\
+\rowcolor{black!12} \begin{center}{\normalsize \sc\bf Heuristics} $\Rightarrow\Rightarrow\Rightarrow$ \newline ~ \newline{\normalsize\sc\bf Algorithms} $\Downarrow\Downarrow\Downarrow$\end{center} & 1. Best config. can be found in a small area. \newline 2. Close in decision space $\rightarrow$ close in obj. space  &
+Linearity between decision space and obj. space
+&
+ML models can predict the sign of $\Delta_O$ given $\Delta_D$
+& CART can return correct rank of candidates \\\Xhline{2\arrayrulewidth}\Xhline{2\arrayrulewidth}
+\rowcolor{yellow!30} \bf\normalsize I - INIT & \textit{Sway1::} no required actions \newline \textit{Sway2::} pre-divide decision space via external domain knowledge& Evaluate a few anchors & Evaluate a few samples & Evaluate a few samples \\
+\bf\normalsize II - AI ASSESSING & &&&\\
+\hspace{3pt} \bf\normalsize II.1 Determine AI model inputs & Any $x$ locates in preserved space & Any $x$ in the decision space can be assessed & Surrogate model built upon every frontier and its nearby  samples& Any $x$ in the decision space can be assessed\\\cline{2-5}
+\hspace{3pt} \bf\normalsize II.2 Train the AI model& {\tt\bf where} space divisor. evaluate $W$ and $E$ representative & {\it Linear model. No need to train}&
+Get $\Delta_D\sim\Delta_O$ pairs\newline For each obj, build KNN to predict $\Delta_O$ given $\Delta_D$
+&  For each obj, build CART  based on evaluated samples in step I\\\cline{2-5}
+\hspace{3pt}\bf\normalsize II.3  Predict the unevaluated $\mathbf{x}$& {\it No need}& $N$ and $F$ are nearest and furthest anchors to $x$\newline $O(x)=O_{\mathit{NF}}\frac{\mathit{NX}\cdot\mathit{NF}}{|\mathit{NF}|^2}+O_N$& Given known $b$\newline $\Delta_O^{bx}=\mathit{KNN}(\Delta_D^{bx})$ $O(x)=\Delta_O^{bx}+\Delta_O^b$& Predict the $x$ by CART\\
+\hspace{3pt} \bf\normalsize \hspace{10pt} Repeat II.3 to assess more &&&&\\
+\rowcolor{green!20}\bf\normalsize III - SELECTION & Any $x$ locates in \texttt{\bf better}(E,W) will be preserved & Pick up the best /frontiers among anchors or assessed $x$ in II.3& Pick up the best /frontiers among anchors or assessed $x$ in II.3& {\it Simple obj::} select best one \newline {\it Multiple objs::} bests given by weighted obj sum under various obj weight vector\\
+\rowcolor{green!40}\bf\normalsize IV - EVALUATE &{\it No actions} unless exiting. \newline Assess any preserved config. before termination & \multicolumn{3}{c}{Evaluate selected config. in III.}\\
+\rowcolor{blue!10}\bf\normalsize V - REPEAT or TERMINATION & {\tt Goto} II.1 or {\tt terminate} when preserved space is small enough & {\it No repeats.} \newline {\tt Terminate} with selected config..& {\tt Goto} I for fresh new loops or {\tt terminate} when no more improvements& Put new evaluated config. (in step IV) into samples, and {\tt goto} II.1;\newline or {\tt terminate} if run out of budget\\
+\Xhline{3\arrayrulewidth}
+\end{tabular}
+\end{table*}
+
+
+% \balance
+\bibliographystyle{IEEEtran}
+\bibliography{ref.bib}
 \end{document}
+
+
